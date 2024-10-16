@@ -50,4 +50,14 @@ public class GridManager : MonoBehaviour
         }
         return null;
     }
+
+    public Object GetSpaceObject(Vector2 space)
+    {
+        foreach (Object obj in gridObjects)
+        {
+            if (obj.GetComponent<GridObject>().gridPosition == space)
+                return obj;
+        }
+        return null;
+    }
 }

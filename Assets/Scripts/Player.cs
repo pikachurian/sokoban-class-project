@@ -1,36 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 public class Player : MonoBehaviour
 {
-    public GridObject gridObject;
+    private GridObject gridObject;
+    private Movable movable;
+
+    private void Start()
+    {
+        gridObject = GetComponent<GridObject>();
+        movable = GetComponent<Movable>();
+    }
 
     private void Update()
     {
-        Vector2 input = GetInput();
+        Vector2Int input = GetInput();
 
-        //Get the new position
-        Vector2Int newPosition = Vector2Int.zero;
-        newPosition.x = (int)Mathf.Clamp((float)gridObject.gridPosition.x + input.x, 1f, (float)GridMaker.reference.dimensions.x);
-        newPosition.y = (int)Mathf.Clamp((float)gridObject.gridPosition.y + input.y, 1f, (float)GridMaker.reference.dimensions.y);
-
-        //Check if the space is free, if so move there
-        if (GridManager.reference.IsSpaceFree(newPosition))
-            gridObject.gridPosition = newPosition;
+        if (input != Vector2.zero)
+        {
+            movable.Move(input);
+        }
     }
 
-    private Vector2 GetInput()
+    private Vector2Int GetInput()
     {
-        Vector2 input = Vector2.zero;
+        Vector2Int input = Vector2Int.zero;
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) //left
-            input = Vector2.left;
+            input = Vector2Int.left;
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) //right
-            input = Vector2.right;
+            input = Vector2Int.right;
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) //up
-            input = Vector2.down;
+            input = Vector2Int.down;
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) //down
-            input = Vector2.up;
+            input = Vector2Int.up;
         return input;
     }
 }
