@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Windows;
@@ -22,27 +23,65 @@ public class Movable : MonoBehaviour
         newPosition.x = (int)Mathf.Clamp((float)gridObject.gridPosition.x + input.x, 1f, (float)GridMaker.reference.dimensions.x);
         newPosition.y = (int)Mathf.Clamp((float)gridObject.gridPosition.y + input.y, 1f, (float)GridMaker.reference.dimensions.y);
 
-        //Check the tag of the object occupying the new position
-        string spaceTag = GridManager.reference.GetSpaceTag(newPosition);
-        switch (spaceTag)
+        //If this block would change position after being clamped, move
+        if (newPosition != gridObject.gridPosition)
         {
-            case "Wall":
-                newPosition = nullPosition;
-                break;
-
-            case "Smooth":
-                //Move the pushed object in the same direction of the player's input.
-                Object smoothBlock = GridManager.reference.GetSpaceObject(newPosition);
-                if (smoothBlock.GetComponent<Movable>().Move(input) == false)
+            //Check the tag of the object occupying the new position
+            string spaceTag = GridManager.reference.GetSpaceTag(newPosition);
+            switch (spaceTag)
+            {
+                case "Clingy":
+                case "Wall":
                     newPosition = nullPosition;
-                break;
-        }
+                    break;
 
-        if (newPosition != nullPosition)
-        {
-            gridObject.gridPosition = newPosition;
-            return true;
+                case "Sticky":
+                case "Smooth":
+                    //Move the pushed object in the same direction of the player's input.
+                    Object smoothBlock = GridManager.reference.GetSpaceObject(newPosition);
+                    if (smoothBlock.GetComponent<Movable>().Move(input) == false)
+                        newPosition = nullPosition;
+                    break;
+            }
+
+            if (newPosition != nullPosition)
+            {
+                if(transform.tag == "Player")
+                    MoveAdjacentStickyBlocks(gridObject.gridPosition, input);
+                gridObject.gridPosition = newPosition;
+                return true;
+            }
         }
         return false;
+    }
+
+    public void MoveAdjacentStickyBlocks(Vector2Int mySpace, Vector2Int input)
+    {
+        List<Object> stickies = new List<Object>();
+        Object obj = null;
+        
+        //Up
+        obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x, mySpace.y - 1));
+        if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
+            stickies.Add(obj);
+        //Left
+        obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x - 1, mySpace.y));
+        if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
+            stickies.Add(obj);
+        //Right
+        obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x + 1, mySpace.y));
+        if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
+            stickies.Add(obj);
+        //Down
+        obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x, mySpace.y + 1));
+        if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
+            stickies.Add(obj);
+
+        foreach(Object o in stickies)
+        {
+            o.GetComponent<Movable>().Move(input);
+        }
+
+        print(stickies);
     }
 }

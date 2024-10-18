@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     {
         Vector2Int input = GetInput();
 
-        if (input != Vector2.zero)
+        if (input != Vector2Int.zero)
         {
             movable.Move(input);
         }
