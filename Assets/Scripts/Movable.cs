@@ -62,7 +62,7 @@ public class Movable : MonoBehaviour
                 return true;
             }
         }
-        print(name + " couldn't move");
+        //print(name + " couldn't move");
         return false;
     }
 
@@ -70,7 +70,7 @@ public class Movable : MonoBehaviour
     {
         //Check if there's a clingy block in the opposite direction of the input.
         Object obj = GridManager.reference.GetSpaceObject(mySpace - input);
-        print("Checking for clingy got " + obj.name);
+        //print("Checking for clingy got " + obj.name);
         if (obj != null && obj.GetComponent<Transform>().tag == "Clingy")
         {
             obj.GetComponent<Movable>().Move(input);
@@ -80,7 +80,7 @@ public class Movable : MonoBehaviour
     {
         List<Object> stickies = new List<Object>();
         Object obj = null;
-        print(transform.name + " Move Sticky");
+        //print(transform.name + " Move Sticky");
         //Up
         obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x, mySpace.y - 1));
         if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
@@ -110,7 +110,7 @@ public class Movable : MonoBehaviour
             //print(obj.name);
         }
 
-        print(stickies.Count.ToString() + " stickies");
+        //print(stickies.Count.ToString() + " stickies");
         foreach (Object o in stickies)
         {
             //if (o.GetComponent<Movable>().hasMoved == false)
@@ -120,6 +120,6 @@ public class Movable : MonoBehaviour
             //}
         }
 
-        print(stickies);
+        //print(stickies);
     }
 }
