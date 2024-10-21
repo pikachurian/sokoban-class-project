@@ -52,17 +52,30 @@ public class Movable : MonoBehaviour
                 Vector2Int previousGridPosition = gridObject.gridPosition;
                 gridObject.gridPosition = newPosition;
 
-                if (transform.tag == "Player" || transform.tag == "Smooth")
+                if (transform.tag != "Sticky")
                 {
                     MoveAdjacentStickyBlocks(previousGridPosition, input);
                 }
 
+                MoveAdjacentClingyBlock(previousGridPosition, input);
+
                 return true;
             }
         }
+        print(name + " couldn't move");
         return false;
     }
 
+    public void MoveAdjacentClingyBlock(Vector2Int mySpace, Vector2Int input)
+    {
+        //Check if there's a clingy block in the opposite direction of the input.
+        Object obj = GridManager.reference.GetSpaceObject(mySpace - input);
+        print("Checking for clingy got " + obj.name);
+        if (obj != null && obj.GetComponent<Transform>().tag == "Clingy")
+        {
+            obj.GetComponent<Movable>().Move(input);
+        }
+    }
     public void MoveAdjacentStickyBlocks(Vector2Int mySpace, Vector2Int input)
     {
         List<Object> stickies = new List<Object>();
