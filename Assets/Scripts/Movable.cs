@@ -18,6 +18,10 @@ public class Movable : MonoBehaviour
         gridObject = GetComponent<GridObject>();
     }
 
+    private void Update()
+    {
+        hasMoved = false;
+    }
     //Returns true if this object moved
     public bool Move(Vector2Int input)
     {
@@ -40,15 +44,19 @@ public class Movable : MonoBehaviour
 
                 case "Sticky":
                 case "Smooth":
-                    //Move the pushed object in the same direction of the player's input.
-                    Object smoothBlock = GridManager.reference.GetSpaceObject(newPosition);
-                    if (smoothBlock.GetComponent<Movable>().Move(input) == false)
-                        newPosition = nullPosition;
+                    if (transform.tag != "Clingy")
+                    {
+                        //Move the pushed object in the same direction of the player's input.
+                        Object smoothBlock = GridManager.reference.GetSpaceObject(newPosition);
+                        if (smoothBlock.GetComponent<Movable>().Move(input) == false)
+                            newPosition = nullPosition;
+                    }
                     break;
             }
 
-            if (newPosition != nullPosition)
+            if (newPosition != nullPosition && hasMoved == false)
             {
+                hasMoved = true;
                 Vector2Int previousGridPosition = gridObject.gridPosition;
                 gridObject.gridPosition = newPosition;
 
