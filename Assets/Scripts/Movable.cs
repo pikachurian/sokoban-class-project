@@ -49,7 +49,14 @@ public class Movable : MonoBehaviour
                         //Move the pushed object in the same direction of the player's input.
                         Object smoothBlock = GridManager.reference.GetSpaceObject(newPosition);
                         if (smoothBlock.GetComponent<Movable>().Move(input) == false)
-                            newPosition = nullPosition;
+                        {
+                            string spaceTag2 = GridManager.reference.GetSpaceTag(newPosition);
+                            if (spaceTag2 != null)
+                            {
+                                newPosition = nullPosition;
+                                print(name + " was stopped by " + smoothBlock.name);
+                            }
+                        }
                     }
                     break;
             }
@@ -67,6 +74,7 @@ public class Movable : MonoBehaviour
 
                 MoveAdjacentClingyBlock(previousGridPosition, input);
 
+                print(name + " moved");
                 return true;
             }
         }
