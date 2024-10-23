@@ -67,10 +67,10 @@ public class Movable : MonoBehaviour
                 Vector2Int previousGridPosition = gridObject.gridPosition;
                 gridObject.gridPosition = newPosition;
 
-                if (transform.tag != "Sticky")
-                {
+                //if (transform.tag != "Sticky")
+                //{
                     MoveAdjacentStickyBlocks(previousGridPosition, input);
-                }
+                //}
 
                 MoveAdjacentClingyBlock(previousGridPosition, input);
 
@@ -101,32 +101,36 @@ public class Movable : MonoBehaviour
         obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x, mySpace.y - 1));
         if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
         {
-            stickies.Add(obj);
+            if (obj.GetComponent<Transform>().GetInstanceID() != transform.GetInstanceID())
+                stickies.Add(obj);
             //print(obj.name);
         }
         //Left
         obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x - 1, mySpace.y));
         if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
         {
-            stickies.Add(obj);
+            if (obj.GetComponent<Transform>().GetInstanceID() != transform.GetInstanceID())
+                stickies.Add(obj);
             //print(obj.name);
         }
         //Right
         obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x + 1, mySpace.y));
         if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
         {
-            stickies.Add(obj);
+            if (obj.GetComponent<Transform>().GetInstanceID() != transform.GetInstanceID())
+                stickies.Add(obj);
             //print(obj.name);
         }
         //Down
         obj = GridManager.reference.GetSpaceObject(new Vector2Int(mySpace.x, mySpace.y + 1));
         if (obj != null && obj.GetComponent<Transform>().tag == "Sticky")
         {
-            stickies.Add(obj);
+            if (obj.GetComponent<Transform>().GetInstanceID() != transform.GetInstanceID())
+                stickies.Add(obj);
             //print(obj.name);
         }
 
-        //print(stickies.Count.ToString() + " stickies");
+        print(stickies.Count.ToString() + " stickies by " + transform.name);
         foreach (Object o in stickies)
         {
             //if (o.GetComponent<Movable>().hasMoved == false)
